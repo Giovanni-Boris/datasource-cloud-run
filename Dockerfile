@@ -1,4 +1,4 @@
-FROM registrysecaas.azurecr.io/secaas/node:18-latest AS build
+FROM registrysecaas.azurecr.io/secaas/node:20-latest AS build
 
 WORKDIR /usr/src/app
 
@@ -13,7 +13,7 @@ RUN npm install && npx nest build && npm prune --omit=dev
 
 USER node
 
-FROM registrysecaas.azurecr.io/secaas/node:18-latest
+FROM registrysecaas.azurecr.io/secaas/node:20-latest
 
 USER node
 
