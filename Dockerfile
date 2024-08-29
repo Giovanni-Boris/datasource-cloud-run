@@ -8,8 +8,9 @@ COPY nest-cli.json ./
 COPY src src/
 
 USER root
-
-RUN npm install && npx nest build && npm prune --omit=dev
+RUN apk add --no-cache libc6-compat
+RUN corepack enable && corepack prepare pnpm@9.6.0 --activate
+RUN pnpm install && npx nest build && pnpm prune --prod
 
 USER node
 
