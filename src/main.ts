@@ -5,6 +5,7 @@ import { AppModule } from "./app.module";
 import { InfoObject } from "@nestjs/swagger/dist/interfaces/open-api-spec.interface";
 import compression from "compression";
 import { Logger } from "nestjs-pino";
+import { ValidationPipe } from "@nestjs/common";
 
 interface IExtendedInfoObject extends InfoObject {
   "x-business-unit-acronym"?: string;
@@ -44,6 +45,13 @@ export async function bootstrap(): Promise<void> {
   });
   app.use(compression({ threshold: 0 }));
   app.useLogger(app.get(Logger));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    })
+  );
 
   createDocumentSwagger(app);
   await app.listen(Number(process.env.PORT ?? 3000), "0.0.0.0");
