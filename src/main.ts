@@ -1,4 +1,4 @@
-import { NestFactory } from "@nestjs/core";
+import { NestFactory, PartialGraphHost } from "@nestjs/core";
 import { FastifyAdapter, NestFastifyApplication } from "@nestjs/platform-fastify";
 import { DocumentBuilder, OpenAPIObject, SwaggerDocumentOptions, SwaggerModule } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
@@ -6,6 +6,7 @@ import { InfoObject } from "@nestjs/swagger/dist/interfaces/open-api-spec.interf
 import compression from "compression";
 import { Logger } from "nestjs-pino";
 import { ValidationPipe } from "@nestjs/common";
+import { writeFileSync } from "fs";
 
 interface IExtendedInfoObject extends InfoObject {
   "x-business-unit-acronym"?: string;
@@ -50,11 +51,14 @@ export async function bootstrap(): Promise<void> {
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
-    })
+    }),
   );
 
   createDocumentSwagger(app);
   await app.listen(Number(process.env.PORT ?? 3000), "0.0.0.0");
 }
 
-void bootstrap();
+void bootstrap().catch(() => {
+  writeFileSync("graph.json", PartialGraphHost.toString() ?? "");
+  process.exit(1);
+});
