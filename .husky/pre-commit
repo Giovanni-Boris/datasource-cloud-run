@@ -1,2 +1,2 @@
-pnpm prettier
+pnpm format
 pnpm lint
