@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "postinstall": "npx husky init && echo \"pnpm format\npnpm lint\" > .husky/pre-commit && echo \"pnpm test:cov\" > .husky/pre-push",
+    "postinstall": "if [ ! -d .git ]; then echo 'Skipping husky install';else npx husky init && echo \"pnpm format\npnpm lint\" > .husky/pre-commit && echo \"pnpm test:cov\" > .husky/pre-push; fi",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
