@@ -10,7 +10,7 @@ COPY src src/
 USER root
 RUN apk add --no-cache libc6-compat
 RUN corepack enable && corepack prepare pnpm@9.6.0 --activate
-RUN pnpm install && npx nest build && pnpm prune --prod
+RUN pnpm install && pnpm set-script prepare "" && npx nest build && pnpm prune --prod
 
 USER node
 
