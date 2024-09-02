@@ -8,9 +8,12 @@ COPY nest-cli.json ./
 COPY src src/
 
 USER root
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat jq
 RUN corepack enable && corepack prepare pnpm@9.6.0 --activate
-RUN pnpm install && pnpm set-script prepare "" && npx nest build && pnpm prune --prod
+RUN pnpm install
+# Remove the prepare script from package.json
+RUN jq 'del(.scripts.prepare)' package.json > temp.json && mv temp.json package.json
+RUN npx nest build && pnpm prune --prod
 
 USER node
 
