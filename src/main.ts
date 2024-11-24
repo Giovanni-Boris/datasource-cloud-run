@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { NestFactory } from "@nestjs/core";
 import { FastifyAdapter, NestFastifyApplication } from "@nestjs/platform-fastify";
 import { DocumentBuilder, OpenAPIObject, SwaggerDocumentOptions, SwaggerModule } from "@nestjs/swagger";
@@ -6,6 +7,7 @@ import { InfoObject } from "@nestjs/swagger/dist/interfaces/open-api-spec.interf
 import compression from "compression";
 import { Logger } from "nestjs-pino";
 import { ValidationPipe } from "@nestjs/common";
+import { config, validateConfig } from "./commons/configs/config";
 
 interface IExtendedInfoObject extends InfoObject {
   "x-business-unit-acronym"?: string;
@@ -20,26 +22,24 @@ interface IExtendedOpenAPIObject extends OpenAPIObject {
 
 function createDocumentSwagger(app: NestFastifyApplication): void {
   const config = new DocumentBuilder()
-    .setTitle("stcx-dgsp-cust-orch-ambassador")
-    .setDescription("Ambassador to consume Customer Orchestrator service")
-    .setContact("Pablo Silva", "", "ext_pasilvaa@falabella.cl")
+    .setTitle("datasource")
+    .setDescription("datasource to consume DATABASE")
+    .setContact("Boris Ancasi", "", "")
     .setVersion("1.0")
-    .addTag("stcx-dgsp-cust-orch-ambassador")
+    .addTag("datasource")
     .build();
 
   const options: SwaggerDocumentOptions = {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
   };
   const document: IExtendedOpenAPIObject = SwaggerModule.createDocument(app, config, options);
-  document.info["x-business-unit-acronym"] = "ftc";
-  document.info["x-business-acronym"] = "stro";
-  document.info["x-capability-acronym"] = "dgsp-cust-orch-ambassador";
-  document.info["x-portfolio"] = "stcx";
+  document.info["x-business-unit-acronym"] = "test";
 
   SwaggerModule.setup("api", app, document);
 }
 
 export async function bootstrap(): Promise<void> {
+  validateConfig(config);
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
     bufferLogs: true,
   });
@@ -54,7 +54,7 @@ export async function bootstrap(): Promise<void> {
   );
 
   createDocumentSwagger(app);
-  await app.listen(Number(process.env.PORT ?? 3000), "0.0.0.0");
+  await app.listen(config.PORT, "0.0.0.0");
 }
 
 void bootstrap();

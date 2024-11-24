@@ -1,4 +1,4 @@
-FROM registrysecaas.azurecr.io/secaas/node:20-latest AS build
+FROM node:20-alpine AS build
 
 WORKDIR /usr/src/app
 
@@ -17,7 +17,7 @@ RUN npx nest build && pnpm prune --prod
 
 USER node
 
-FROM registrysecaas.azurecr.io/secaas/node:20-latest
+FROM node:20-alpine
 
 USER node
 
