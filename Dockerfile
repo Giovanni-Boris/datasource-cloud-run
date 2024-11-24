@@ -6,7 +6,7 @@ COPY package*.json ./
 COPY tsconfig*.json ./
 COPY nest-cli.json ./
 COPY src src/
-COPY scripts scripts/
+
 
 USER root
 RUN apk add --no-cache libc6-compat jq
@@ -27,7 +27,7 @@ ENV LANGUAGE es_CL:es
 ENV LC_ALL es_CL.UTF-8
 
 WORKDIR /usr/src/app
-
+COPY scripts scripts/
 COPY --from=build /usr/src/app/dist dist/
 COPY --from=build /usr/src/app/node_modules node_modules/
 
