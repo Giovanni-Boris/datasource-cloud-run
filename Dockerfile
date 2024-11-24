@@ -6,6 +6,7 @@ COPY package*.json ./
 COPY tsconfig*.json ./
 COPY nest-cli.json ./
 COPY src src/
+COPY scripts scripts/
 
 USER root
 RUN apk add --no-cache libc6-compat jq
